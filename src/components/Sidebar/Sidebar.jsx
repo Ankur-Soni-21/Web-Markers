@@ -1,9 +1,40 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import HeaderBar from "./HeaderBar";
+import appwriteService from "../../appwrite/config";
+import Container from "../Container";
+import { useDispatch, useSelector } from "react-redux";
+import { setColl } from "../../features/collSlice";
 
 function Sidebar() {
-  return (
-    <div>Sidebar</div>
-  )
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const userId = useSelector((state) => state.auth.userData.$id);
+
+  useEffect(() => {
+    const fetchCollections = appwriteService.ListCollections({
+      User_ID: userId,
+    });
+    fetchCollections.then((response) => {
+      const collections = response.documents.map((doc) => ({
+        collection_name: doc.Collection_Name,
+        collection_id: doc.$id,
+      }));
+      console.log(collections);
+      dispatch(setColl(collections));
+      setLoading(false);
+    });
+  }, []);
+
+  return !loading ? (
+    <Container className={`m-2 p-4 w-1/4 h-4/5 min-h-[640px] max-h-[960px]`}>
+      <HeaderBar></HeaderBar>
+    </Container>
+  ) : (
+    // todo : add loading youtube video loader
+    <Container className={`m-2 p-4 w-1/4 h-4/5 min-h-640`}>
+      <h1>Loading...</h1>
+    </Container>
+  );
 }
 
-export default Sidebar
+export default Sidebar;
