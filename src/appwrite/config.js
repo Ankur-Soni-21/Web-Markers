@@ -120,12 +120,12 @@ export class Service {
 
     // Collections
 
-    async AddCollection({ User_ID, Collection_Name }) {
+    async AddCollection({ User_ID, Collection_Name, Collection_ID }) {
         try {
             return await this.databases.createDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionId,
-                ID.unique(),
+                Collection_ID,
                 {
                     User_ID,
                     Title: "Collection",
