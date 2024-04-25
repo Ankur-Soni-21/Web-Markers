@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 function CollectionLink(props) {
   return (
     <Button>
-      <span>&#10148;</span>
+      <i className="fa-regular fa-folder"></i>
       <Link to={`/home/${props.collection}`}>{props.collection}</Link>
     </Button>
   );

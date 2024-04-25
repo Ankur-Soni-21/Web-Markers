@@ -26,12 +26,14 @@ function Sidebar() {
   }, []);
 
   return !loading ? (
-    <Container className={`m-2 p-4 w-1/4 h-4/5 min-h-[640px] max-h-[960px]`}>
+    <Container
+      className={`m-2 p-4 w-1/5 min-w-[240px] h-full min-h-[640px] flex flex-col text-slate-500 `}
+    >
       <HeaderBar></HeaderBar>
     </Container>
   ) : (
     // todo : add loading youtube video loader
-    <Container className={`m-2 p-4 w-1/4 h-4/5 min-h-640`}>
+    <Container className={`m-2 p-4 w-1/4 h-full min-h-640`}>
       <h1>Loading...</h1>
     </Container>
   );

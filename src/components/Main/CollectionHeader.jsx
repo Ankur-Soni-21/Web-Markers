@@ -1,35 +1,63 @@
-import React from "react";
+import React, { useState } from "react";
 import Container from "../Container";
-import appwriteService from "../../appwrite/config";
-import { useNavigate } from "react-router-dom";
-function CollectionHeader({ collection, userId }) {
-  const navigate = useNavigate();
-  const handleDelete = () => {
-    appwriteService
-      .RemoveCollection({
-        User_ID: userId,
-        Collection_Name: collection,
-      })
-      .then((response) => {
-        console.log("Delete Collection Response ", response);
-        navigate("/home/all");
-      })
-      .catch((error) => console.error("Delete Error", error));
+import DeleteCollPopup from "./DeleteCollPopup";
+function CollectionHeader({ collection, userId, setViewStyle, viewStyle }) {
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handlePopupToggle = () => {
+    setShowPopup((prevState) => !prevState);
   };
+
   return (
-    <Container className={`flex flex-row justify-between items-center my-2`}>
-      <Container className={`m-2 p-2`}>
-        <h1>{collection}</h1>
-      </Container>
-      <Container className={`m-1 p-1 flex flex-row gap-1`}>
-        <Container className={`m-1 p-1`}>
-          <button>Toogle View</button>
+    <>
+      <Container
+        className={`flex flex-row justify-between items-center my-2 border-b-2 border-b-gray-400`}
+      >
+        <Container className={`m-2 p-2`}>
+          <h1 className="text-3xl font-semibold">{collection}</h1>
         </Container>
-        <Container className={`m-1 p-1`}>
-          <button onClick={handleDelete}>Delete</button>
+        <Container className={`m-1 p-1 flex flex-row gap-1`}>
+          <Container className={`m-1 p-1 `}>
+            <button
+              onClick={() => setViewStyle(true)}
+              className={`hover:bg-slate-200 rounded-lg py-2 px-3 ${
+                viewStyle ? "bg-slate-200" : ""
+              }`}
+            >
+              <i className="fa-solid fa-list"></i>
+            </button>
+          </Container>
+
+          <Container className={`m-1 p-1`}>
+            <button
+              onClick={() => setViewStyle(false)}
+              className={`hover:bg-slate-200 py-2 px-3 rounded-lg ${
+                !viewStyle ? "bg-slate-200" : ""
+              }`}
+            >
+              <i className="fa-solid fa-grip-vertical"></i>
+            </button>
+          </Container>
+
+          <Container className={`m-1 p-1`}>
+            <button
+              onClick={handlePopupToggle}
+              className="hover:bg-slate-200 hover:rounded-lg py-2 px-3"
+            >
+              <i className="fa-solid fa-trash"></i>
+            </button>
+          </Container>
         </Container>
       </Container>
-    </Container>
+      {showPopup && (
+        <DeleteCollPopup
+          collection={collection}
+          userId={userId}
+          setShowPopup={setShowPopup}
+          showPopup={showPopup}
+        ></DeleteCollPopup>
+      )}
+    </>
   );
 }
 
