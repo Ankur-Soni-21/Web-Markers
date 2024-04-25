@@ -19,7 +19,7 @@ function Sidebar() {
         collection_name: doc.Collection_Name,
         collection_id: doc.$id,
       }));
-      console.log(collections);
+      console.log("Collections", collections);
       dispatch(setColl(collections));
       setLoading(false);
     });

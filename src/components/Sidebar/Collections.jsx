@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import CollectionLink from "../CollectionLink";
 import { useSelector } from "react-redux";
 
