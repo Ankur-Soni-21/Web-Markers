@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../Button";
 import Container from "../Container";
@@ -14,16 +14,38 @@ function AddCollection() {
   const userId = useSelector((state) => state.auth.userData.$id);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const inputRef = useRef(null);
 
-  const addCollection = () => {
-    setShowInput(true);
+  const handleClickOutside = (event) => {
+    if (
+      showInput &&
+      inputRef.current &&
+      !inputRef.current.contains(event.target)
+      //* ( if input is being displayed + inputref exists + the target when we clicked is outside the input) => then we close the input
+    ) {
+      setShowInput(false);
+    }
   };
 
-  const submitCollectionName = () => {
+  useEffect(() => {
+    // Add event listener for outside clicks when the input field is open
+    document.addEventListener("click", handleClickOutside, true);
+
+    // Cleanup function to remove the event listener when the component unmounts
+    return () =>
+      document.removeEventListener("click", handleClickOutside, true);
+  }, [showInput]);
+
+  const addCollection = () => {
+    setShowInput(!showInput);
+  };
+
+  const submitCollectionName = (e) => {
     if (collectionName === "") {
       console.log("Collection name cannot be empty");
       return;
     }
+    if (e.key !== "Enter") return;
     setCollectionId((s) => ID.unique());
 
     appwriteService
@@ -51,19 +73,22 @@ function AddCollection() {
   return (
     <>
       <Button onClick={addCollection}>
-        <span>&#10148; Add New Collection</span>
+        <i className="fa-solid fa-plus"></i>
+        <span> Add New Collection</span>
       </Button>
 
       {showInput && (
-        <Container className="flex flex-row items-center box-border px-2">
+        <Container className=" w-full flex flex-row justify-between items-center box-border p-1 px-2 m-1 border-b-2 border-b-gray-400">
           <input
+            ref={inputRef}
             type="text"
             placeholder="Collection Name"
-            className="text-black"
+            className="p-1 text-gray-400 bg-black border-none outline-none "
             onChange={(e) => setCollectionName(e.target.value)}
+            onKeyDown={(e) => submitCollectionName(e)}
           ></input>
 
-          <Button onClick={submitCollectionName}>Submit</Button>
+          {/* <Button className="invi" onClick={submitCollectionName}>Submit</Button> */}
         </Container>
       )}
     </>
