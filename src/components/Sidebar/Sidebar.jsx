@@ -27,7 +27,7 @@ function Sidebar() {
 
   return !loading ? (
     <Container
-      className={`m-2 p-4 w-1/5 min-w-[240px] h-full min-h-[640px] flex flex-col`}
+      className={`m-2 p-4 w-1/5 min-w-[240px] h-full min-h-[640px] flex flex-col text-slate-500 `}
     >
       <HeaderBar></HeaderBar>
     </Container>

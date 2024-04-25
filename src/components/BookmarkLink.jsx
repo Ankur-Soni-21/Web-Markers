@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Container from "./Container";
 import appwriteService from "../appwrite/config";
 
-function BookmarkLink({ bookmark }) {
+function BookmarkLink({ bookmark, viewStyle }) {
   const [book, setBook] = useState(bookmark);
 
   const handleDelete = () => {
@@ -17,8 +17,13 @@ function BookmarkLink({ bookmark }) {
       .catch((error) => console.log(error));
   };
 
+  const shortenURL = (url) => {
+    const parsedURL = new URL(url);
+    return parsedURL.hostname;
+  };
+
   return book ? (
-    <Container className={`flex flex-row justify-between `}>
+    <Container className={`flex flex-row justify-between max-h-[120px] ml-10`}>
       <a
         target="_blank"
         rel="noreferrer noopener"
@@ -26,22 +31,28 @@ function BookmarkLink({ bookmark }) {
         className="w-full"
       >
         <Container
-          className={`flex flex-row p-2 my-2 gap-2 hover:bg-slate-600 w-full`}
+          className={`flex flex-row p-2 my-2 gap-2 hover:bg-slate-200 rounded-2xl w-full h-full`}
         >
-          <Container>
-            <img src={book.imageURL} alt={book.title} />
+          <Container
+            className={`rounded-lg border-2 border-slate-200 w-24 h-24 `}
+          >
+            <img className="w-24 h-24 object-fill" src={book.imageURL} alt={book.title} />
           </Container>
 
-          <Container className={`flex flex-col gap-2 w-full`}>
-            <Container className={`m-1 p-1`}>
-              <h1>{book.title}</h1>
+          <Container className={`flex flex-col gap-2 ml-3 w-full `}>
+            <Container className={``}>
+              <h1 className="font-black text-lg">{book.title}</h1>
             </Container>
-            <Container className={`m-1 p-1`}>
+
+            <Container className={`text-slate-400`}>
               <h1>{book.description}</h1>
             </Container>
-            <Container className={`flex-row gap-2 flex p-1 m-1`}>
-              <span>Created At : {book.createdAt}</span>
-              <span>{book.URL}</span>
+
+            <Container className={`flex-row gap-2 flex text-slate-400`}>
+              <span className="border-r-2 pr-2 border-slate-400">
+                {book.createdAt}
+              </span>
+              <span>{shortenURL(book.URL)}</span>
             </Container>
           </Container>
         </Container>
@@ -49,16 +60,23 @@ function BookmarkLink({ bookmark }) {
       <Container
         className={`flex flex-row w-1/5 gap-3 justify-between p-2 m-2 flex-wrap`}
       >
-        <Container
-          className={`flex justify-center p-2  flex-wrap hover:bg-slate-400`}
-        >
-          <button onClick={handleDelete}>Delete</button>
+        <Container className={`flex justify-center flex-wrap items-center`}>
+          <button
+            onClick={handleDelete}
+            className=" hover:bg-slate-200 h-max p-2 rounded-lg"
+          >
+            <i className="fa-solid fa-trash"></i>
+          </button>
         </Container>
-        <Container className={`flex justify-center p-2  flex-wrap`}>
-          <button>Share</button>
+        <Container className={`flex justify-center flex-wrap items-center`}>
+          <button className=" hover:bg-slate-200 h-max p-2 rounded-lg">
+            <i className="fa-solid fa-share"></i>
+          </button>
         </Container>
-        <Container className={`flex justify-center p-2  flex-wrap`}>
-          <button>Options</button>
+        <Container className={`flex justify-center flex-wrap items-center`}>
+          <button className=" hover:bg-slate-200 h-max p-2 rounded-lg">
+            <i className="fa-solid fa-ellipsis"></i>
+          </button>
         </Container>
       </Container>
     </Container>

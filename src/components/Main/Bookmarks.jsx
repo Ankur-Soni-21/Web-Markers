@@ -18,6 +18,7 @@ function Bookmarks() {
   const collection = "Updated Collection";
   const [loading, setLoading] = useState(true);
   const [books, setBooks] = useState([]);
+  const [viewStyle, setViewStyle] = useState(true);
 
   const getDate = () => {
     const date = new Date();
@@ -64,8 +65,9 @@ function Bookmarks() {
               description: "This is a temporary bookmark",
               starred: false,
               URL: "https://example.com",
-              imageURL: "https://example.com/image.jpg",
-              createdAt: getDate()
+              imageURL:
+                "https://static-production.npmjs.com/338e4905a2684ca96e08c7780fc68412.png",
+              createdAt: getDate(),
             },
           ]
         );
@@ -84,9 +86,18 @@ function Bookmarks() {
 
   return !loading ? (
     <>
-      <CollectionHeader collection={collection} userId={userId} />
+      <CollectionHeader
+        collection={collection}
+        userId={userId}
+        setViewStyle={setViewStyle}
+        viewStyle={viewStyle}
+      />
       {books.map((bookmark) => (
-        <BookmarkLink key={bookmark.$id} bookmark={bookmark}></BookmarkLink>
+        <BookmarkLink
+          key={bookmark.$id}
+          bookmark={bookmark}
+          viewStyle={viewStyle}
+        ></BookmarkLink>
       ))}
     </>
   ) : null;
