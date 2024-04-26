@@ -19,6 +19,7 @@ function CollectionHeader({ collection, userId, setViewStyle, viewStyle }) {
         <Container className={`m-1 p-1 flex flex-row gap-1`}>
           <Container className={`m-1 p-1 `}>
             <button
+              title="list view"
               onClick={() => setViewStyle(true)}
               className={`hover:bg-slate-200 rounded-lg py-2 px-3 ${
                 viewStyle ? "bg-slate-200" : ""
@@ -30,6 +31,7 @@ function CollectionHeader({ collection, userId, setViewStyle, viewStyle }) {
 
           <Container className={`m-1 p-1`}>
             <button
+              title="card view"
               onClick={() => setViewStyle(false)}
               className={`hover:bg-slate-200 py-2 px-3 rounded-lg ${
                 !viewStyle ? "bg-slate-200" : ""
@@ -41,6 +43,7 @@ function CollectionHeader({ collection, userId, setViewStyle, viewStyle }) {
 
           <Container className={`m-1 p-1`}>
             <button
+              title="Delete"
               onClick={handlePopupToggle}
               className="hover:bg-slate-200 hover:rounded-lg py-2 px-3"
             >

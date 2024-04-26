@@ -3,22 +3,40 @@ import Container from "../Container";
 import appwriteService from "../../appwrite/config";
 import { useNavigate } from "react-router-dom";
 import spinner from "../../assets/spinner.svg";
+import { deleteColl } from "../../features/collSlice";
+import { useDispatch } from "react-redux";
 
 function DeleteCollPopup({ setShowPopup, collection, userId, showPopup }) {
   const [loader, setLoader] = useState(false);
   const [showOverlay, setShowOverlay] = useState(true);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const popupRef = useRef(null);
 
   const handleDelete = () => {
     setLoader(true);
     appwriteService
-      .RemoveCollection({
+      .MoveCollectionToTrash({
         User_ID: userId,
         Collection_Name: collection,
       })
       .then((response) => {
         console.log("Delete Collection Response ", response);
+        appwriteService
+        //gt coolection won't work because we delete the collectionin above call
+          .GetCollectionId({
+            User_ID: userId,
+            Collection_Name: collection,
+          })
+          .then((res) => {
+            console.log(res);
+            dispatch(
+              deleteColl({
+                collection_name: collection,
+                collection_id: res,
+              })
+            );
+          });
         setShowPopup(false);
         setShowOverlay(false);
         navigate("/home/all");
@@ -47,8 +65,8 @@ function DeleteCollPopup({ setShowPopup, collection, userId, showPopup }) {
           <Container className={`flex flex-row m-2 px-2 items-center gap-2`}>
             <p>
               Are you sure you want to delete this collection? All bookmarks
-              within the collection will be deleted{" "}
-              <span className="font-bold text-red-500">PERMANENTLY</span>
+              within the collection will be moved to{" "}
+              <span className="font-bold text-red-500">TRASH</span>
             </p>
           </Container>
           <Container
