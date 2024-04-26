@@ -47,7 +47,7 @@ export class Service {
         }
     }
 
-    async UpdateBookmark(Bookmark_ID, { Collection_Name }) {
+    async UpdateBookmark({ Bookmark_ID, Collection_Name }) {
         try {
             return await this.databases.updateDocument(
                 conf.appwriteDatabaseId,
@@ -141,7 +141,7 @@ export class Service {
         }
     }
 
-    async RemoveCollection({ User_ID, Collection_Name }) {
+    async RemoveCompleteCollection({ User_ID, Collection_Name }) {
         try {
             const deleteList = await this.ListBookmarksByCollection({ User_ID: User_ID, Collection_Name: Collection_Name });
             console.log("Delete List", deleteList);
@@ -151,6 +151,19 @@ export class Service {
             return true;
         } catch (error) {
             console.log("Appwrite service :: RemoveCollection :: error", error);
+            return false;
+        }
+    }
+
+    async RemoveCollection({ User_ID, Collection_Name }) {
+        const collection_id = await this.GetCollectionId({ User_ID: User_ID, Collection_Name: Collection_Name });
+        if (collection_id) {
+            await this.RemoveBookmark({ Bookmark_ID: collection_id }).then((res) => {
+                return res;
+            });
+        }
+        else {
+            console.log("Collection not found");
             return false;
         }
     }
@@ -169,7 +182,42 @@ export class Service {
             console.log("Appwrite service :: ListCollections :: error", error);
         }
     }
+    async MoveCollectionToTrash({ User_ID, Collection_Name }) {
+        try {
+            await this.RemoveCollection({ User_ID, Collection_Name });
+            const bookmarks = await this.ListBookmarksByCollection({ User_ID, Collection_Name });
+            bookmarks.documents.forEach(async (bookmark) => {
+                await this.UpdateBookmark({ Bookmark_ID: bookmark.$id, Collection_Name: "Trash" });
+            });
+            return true;
+        } catch (error) {
+            console.log("Appwrite service :: MoveCollectionToTrash :: error", error);
+        }
+    }
+    async GetCollectionId({ User_ID, Collection_Name }) {
+        try {
+            const collections = await this.databases.listDocuments(
+                conf.appwriteDatabaseId,
+                conf.appwriteCollectionId,
+                [
+                    Query.equal("User_ID", User_ID),
+                    Query.equal("Collection_Name", Collection_Name),
+                    Query.equal("Is_Collection", true)
+                ]
+            );
+            if (collections.documents.length > 0) {
+                return collections.documents[0].$id;
+            } else {
+                return null;
+            }
+        } catch (error) {
+            console.log("Appwrite service :: GetCollectionId :: error", error);
+            return null;
+        }
+    }
 }
 
 const appwriteService = new Service();
 export default appwriteService;
+//"662b9f1578a6084700fa"
+//"662b9f1578a6084700fa"

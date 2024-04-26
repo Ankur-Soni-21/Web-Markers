@@ -1,6 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-    coll: [],
+    coll: [{
+        collection_name: "",
+        collection_id: "",
+    }],
 }
 
 const collSlice = createSlice({
@@ -12,9 +15,13 @@ const collSlice = createSlice({
         },
         addColl: (state, action) => {
             state.coll.push(action.payload);
+        },
+        deleteColl: (state, action) => {
+            console.log("Delete Collection ", action.payload);
+            state.coll = state.coll.filter(item => item !== action.payload);
         }
     }
 });
 
-export const { setColl, addColl } = collSlice.actions;
+export const { setColl, addColl, deleteColl } = collSlice.actions;
 export default collSlice.reducer;

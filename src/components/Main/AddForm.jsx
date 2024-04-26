@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Container from "../Container";
 import appwriteService from "../../appwrite/config";
 import { useSelector } from "react-redux";
@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { addBookmark } from "../../features/bookSlice";
 import conf from "../../conf/conf";
 import { useParams } from "react-router-dom";
+import spinner from "../../assets/spinner.svg";
 
 function AddForm() {
   const collections = useSelector((state) => state.coll.coll);
@@ -14,10 +15,8 @@ function AddForm() {
   const params = useParams();
   const defaultCollection = params;
 
-  const [selectedColl, setSeletedColl] = useState(
-    collections[0].collection_name
-  );
-  const [url, setUrl] = useState(null);
+  const [selectedColl, setSeletedColl] = useState("Unsorted");
+  const [url, setUrl] = useState("");
   const apiUrl = `https://jsonlink.io/api/extract?url=${url}&api_key=${conf.jsonLinkMetaDataKey}`;
   const [isAdding, setIsAdding] = useState(false);
 
@@ -43,8 +42,7 @@ function AddForm() {
   }
 
   const handleAddBookmark = () => {
-    if (!url) return;
-    if (!isValidUrl(url)) {
+    if (!isValidUrl(url) || url === "" || !url) {
       alert("Invalid URL");
       return;
     }
@@ -85,7 +83,7 @@ function AddForm() {
               })
             );
             setIsAdding(false);
-            setUrl(null);
+            setUrl("");
           })
           .catch((error) => {
             console.log(error);
@@ -95,26 +93,34 @@ function AddForm() {
   };
 
   return (
-    <Container className={`p-2 m-2 flex flex-col gap-2`}>
-      <Container className={`flex gap-2 items-center p-1 justify-between`}>
-        <label htmlFor="url">URL:</label>
+    <Container className={`p-2 m-2 flex flex-col gap-2 `}>
+      <Container className={`flex gap-2 items-center p-1 justify-between `}>
+        <label className="w-20 text-slate-600 font-bold" htmlFor="url">
+          URL:
+        </label>
         <input
           type="text"
           id="url"
           placeholder="Enter bookmark URL"
-          className="p-1 m-1 text-black"
+          className="p-1 m-1 text-black w-64 outline-none rounded-md pl-2"
           required
           onChange={(e) => setUrl(e.target.value)}
+          value={url}
         ></input>
       </Container>
       <Container className={`flex gap-2 p-1 items-center justify-between`}>
-        <label htmlFor="collection">Collection : </label>
+        <label className="w-24 text-slate-600 font-bold" htmlFor="collection">
+          Collection :{" "}
+        </label>
         <select
           defaultValue={defaultCollection ?? collections[0].collection_name}
-          className="text-black p-1 m-1"
+          className=" px-1 text-slate-500 m-1 w-64 outline-none rounded-md py-2"
           id="collection"
           onChange={(e) => setSeletedColl(e.target.value)}
         >
+          <option value={"Unsorted"} className="text-black">
+            Unsorted
+          </option>
           {collections.map((collection) => (
             <option
               key={collection.collection_id}
@@ -126,8 +132,18 @@ function AddForm() {
           ))}
         </select>
       </Container>
-      <button onClick={handleAddBookmark}>
-        {!isAdding ? <span>Add</span> : <span>Adding...</span>}
+      <button
+        onClick={handleAddBookmark}
+        className="rounded-lg bg-slate-700 text-white py-2 my-2 h-12"
+      >
+        {!isAdding ? (
+          <span>Add Bookmark</span>
+        ) : (
+          <span className="flex flex-row gap-2 justify-center items-center">
+            <img src={spinner} alt="" className="w-8 h-8 animate-spin" />
+            Adding...
+          </span>
+        )}
       </button>
     </Container>
   );

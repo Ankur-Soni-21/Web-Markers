@@ -46,8 +46,9 @@ function AddCollection() {
       return;
     }
     if (e.key !== "Enter") return;
-    setCollectionId((s) => ID.unique());
 
+    setCollectionId((c) => ID.unique());
+    console.log("collectionid : ", collectionId);
     appwriteService
       .AddCollection({
         User_ID: userId,
@@ -56,19 +57,20 @@ function AddCollection() {
       })
       .then((response) => {
         console.log(response);
-        dispatch(
-          addColl({
-            collection_name: collectionName,
-            collection_id: collectionId,
-          })
-        );
-        setShowInput(false);
-        navigate(`/home/${collectionName}`);
+        if (response) {
+          dispatch(
+            addColl({
+              collection_name: collectionName,
+              collection_id: collectionId,
+            })
+          );
+          setShowInput(false);
+          navigate(`/home/${collectionName}`);
+          console.log("Collection Added");
+          setCollectionName((s) => "");
+          setCollectionId((s) => "");
+        }
       });
-
-    console.log("Collection Added");
-    setCollectionName((s) => "");
-    setCollectionId((s) => "");
   };
   return (
     <>

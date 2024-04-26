@@ -1,20 +1,32 @@
 import React, { useState } from "react";
 import Container from "./Container";
 import appwriteService from "../appwrite/config";
+import spinner from "../assets/spinner.svg";
 
 function BookmarkLink({ bookmark, viewStyle }) {
   const [book, setBook] = useState(bookmark);
+  const [deleting, setDeleting] = useState(false);
 
   const handleDelete = () => {
+    setDeleting(true);
     appwriteService
-      .RemoveBookmark({
+      .UpdateBookmark({
         Bookmark_ID: book.$id,
+        Collection_Name: "Trash",
       })
       .then((res) => {
         console.log("Delete Bookmark : ", res);
+        setDeleting(false);
         setBook(null);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setDeleting(false);
+      });
+  };
+
+  const handleOpenInNewTab = () => {
+    window.open(book.URL, "_blank");
   };
 
   const shortenURL = (url) => {
@@ -23,20 +35,24 @@ function BookmarkLink({ bookmark, viewStyle }) {
   };
 
   return book ? (
-    <Container className={`flex flex-row justify-between max-h-[120px] ml-10`}>
+    <Container
+      className={`flex flex-row justify-between max-h-[120px] pl-10 rounded-2xl border-slate-300 pb-4  hover:bg-slate-200 `}
+    >
       <a
         target="_blank"
         rel="noreferrer noopener"
         href={book.URL}
         className="w-full"
       >
-        <Container
-          className={`flex flex-row p-2 my-2 gap-2 hover:bg-slate-200 rounded-2xl w-full h-full`}
-        >
+        <Container className={`flex flex-row p-2 my-2 gap-2  w-full h-full`}>
           <Container
             className={`rounded-lg border-2 border-slate-200 w-24 h-24 `}
           >
-            <img className="w-24 h-24 object-fill" src={book.imageURL} alt={book.title} />
+            <img
+              className="w-24 h-24 object-fill"
+              src={book.imageURL}
+              alt={book.title}
+            />
           </Container>
 
           <Container className={`flex flex-col gap-2 ml-3 w-full `}>
@@ -58,23 +74,45 @@ function BookmarkLink({ bookmark, viewStyle }) {
         </Container>
       </a>
       <Container
-        className={`flex flex-row w-1/5 gap-3 justify-between p-2 m-2 flex-wrap`}
+        className={`flex flex-row w-1/5 gap-1 justify-around p-2 m-2 flex-wrap max-w-48`}
       >
         <Container className={`flex justify-center flex-wrap items-center`}>
-          <button
-            onClick={handleDelete}
-            className=" hover:bg-slate-200 h-max p-2 rounded-lg"
-          >
-            <i className="fa-solid fa-trash"></i>
-          </button>
+          {deleting ? (
+            <button
+              className=" bg-slate-600 h-max p-2 rounded-lg"
+              title="Delete"
+            >
+              <img
+                className="w-5 h-5 animate-spin"
+                src={spinner}
+                alt="website logo"
+              />
+            </button>
+          ) : (
+            <button
+              onClick={handleDelete}
+              className=" hover:bg-slate-300 h-max p-2 rounded-lg"
+              title="Delete"
+            >
+              <i className="fa-solid fa-trash"></i>
+            </button>
+          )}
         </Container>
         <Container className={`flex justify-center flex-wrap items-center`}>
-          <button className=" hover:bg-slate-200 h-max p-2 rounded-lg">
+          <button
+            className=" hover:bg-slate-300 h-max p-2 rounded-lg"
+            onClick={handleOpenInNewTab}
+            title="Open in new tab"
+          >
             <i className="fa-solid fa-share"></i>
           </button>
         </Container>
+
         <Container className={`flex justify-center flex-wrap items-center`}>
-          <button className=" hover:bg-slate-200 h-max p-2 rounded-lg">
+          <button
+            className=" hover:bg-slate-300 h-max p-2 rounded-lg"
+            title="More options"
+          >
             <i className="fa-solid fa-ellipsis"></i>
           </button>
         </Container>
