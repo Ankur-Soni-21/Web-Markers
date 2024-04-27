@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Container from "../Container";
 import DeleteCollPopup from "./DeleteCollPopup";
 function CollectionHeader({ collection, userId, setViewStyle, viewStyle }) {
@@ -8,13 +8,19 @@ function CollectionHeader({ collection, userId, setViewStyle, viewStyle }) {
     setShowPopup((prevState) => !prevState);
   };
 
+  useEffect(() => {
+    console.log(collection);
+  }, [collection]);
+
   return (
     <>
       <Container
         className={`flex flex-row justify-between items-center my-2 border-b-2 border-b-gray-400`}
       >
         <Container className={`m-2 p-2`}>
-          <h1 className="text-3xl font-semibold">{collection}</h1>
+          <h1 className="text-3xl font-semibold">
+            {collection === "all" ? "All Bookmarks" : collection}
+          </h1>
         </Container>
         <Container className={`m-1 p-1 flex flex-row gap-1`}>
           <Container className={`m-1 p-1 `}>

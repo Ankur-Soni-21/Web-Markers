@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import Button from "../Button";
 import Container from "../Container";
 import { useDispatch, useSelector } from "react-redux";
-import { addColl, setColl } from "../../features/collSlice";
-import { ID } from "appwrite";
+import { addColl } from "../../features/collSlice";
+import { v4 as uuidv4 } from "uuid";
 import appwriteService from "../../appwrite/config";
 
 function AddCollection() {
   const [showInput, setShowInput] = useState(false);
   const [collectionName, setCollectionName] = useState("");
-  const [collectionId, setCollectionId] = useState("");
+  const allCollections = useSelector((state) => state.coll.coll);
   const userId = useSelector((state) => state.auth.userData.$id);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -21,7 +21,6 @@ function AddCollection() {
       showInput &&
       inputRef.current &&
       !inputRef.current.contains(event.target)
-      //* ( if input is being displayed + inputref exists + the target when we clicked is outside the input) => then we close the input
     ) {
       setShowInput(false);
     }
@@ -39,21 +38,35 @@ function AddCollection() {
   const addCollection = () => {
     setShowInput(!showInput);
   };
+  const checkDuplicateCollection = (name) => {
+    return allCollections.some(
+      (collection) => collection.collection_name === name
+    );
+  };
 
   const submitCollectionName = (e) => {
+    const res = checkDuplicateCollection(collectionName);
+    console.log(res);
+    if (res && e.key == "Enter") {
+      alert("Collection Already Exists");
+      return null;
+    }
+
+    console.log(collectionName);
     if (collectionName === "") {
       console.log("Collection name cannot be empty");
-      return;
+      return null;
     }
-    if (e.key !== "Enter") return;
+    if (e.key !== "Enter") return null;
 
-    setCollectionId((c) => ID.unique());
-    console.log("collectionid : ", collectionId);
+    const newCollectionId = uuidv4();
+    console.log("a", newCollectionId);
+
     appwriteService
       .AddCollection({
         User_ID: userId,
         Collection_Name: collectionName,
-        Collection_ID: collectionId,
+        Collection_ID: newCollectionId,
       })
       .then((response) => {
         console.log(response);
@@ -61,17 +74,20 @@ function AddCollection() {
           dispatch(
             addColl({
               collection_name: collectionName,
-              collection_id: collectionId,
+              collection_id: newCollectionId,
             })
           );
           setShowInput(false);
-          navigate(`/home/${collectionName}`);
+          console.log("collectionid : ", newCollectionId);
+          navigate(`/home/${newCollectionId}`);
           console.log("Collection Added");
-          setCollectionName((s) => "");
-          setCollectionId((s) => "");
+          setCollectionName("");
         }
       });
+    console.log("collectionid : ", newCollectionId);
+    setCollectionName("");
   };
+
   return (
     <>
       <Button onClick={addCollection}>
@@ -88,6 +104,7 @@ function AddCollection() {
             className="p-1 text-gray-400 bg-black border-none outline-none "
             onChange={(e) => setCollectionName(e.target.value)}
             onKeyDown={(e) => submitCollectionName(e)}
+            value={collectionName}
           ></input>
 
           {/* <Button className="invi" onClick={submitCollectionName}>Submit</Button> */}

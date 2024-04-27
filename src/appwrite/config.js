@@ -118,6 +118,19 @@ export class Service {
         }
     }
 
+    async RemoveAllBookmarks({ User_ID }) {
+        try {
+            const bookmarks = await this.ListAllBookmarks({ User_ID });
+            bookmarks.documents.forEach(async (doc) => {
+                await this.RemoveBookmark({ Bookmark_ID: doc.$id });
+            });
+            return true;
+        } catch (error) {
+            console.log("Appwrite service :: RemoveAllBookmarks :: error", error);
+            return false;
+        }
+    }
+
     // Collections
 
     async AddCollection({ User_ID, Collection_Name, Collection_ID }) {
@@ -182,6 +195,8 @@ export class Service {
             console.log("Appwrite service :: ListCollections :: error", error);
         }
     }
+
+
     async MoveCollectionToTrash({ User_ID, Collection_Name }) {
         try {
             await this.RemoveCollection({ User_ID, Collection_Name });
@@ -194,6 +209,7 @@ export class Service {
             console.log("Appwrite service :: MoveCollectionToTrash :: error", error);
         }
     }
+
     async GetCollectionId({ User_ID, Collection_Name }) {
         try {
             const collections = await this.databases.listDocuments(

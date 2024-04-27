@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import Container from "../Container";
-
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { filterBookmarks } from "../../features/bookSlice";
 function SearchBar() {
   const [query, setQuery] = useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
-    if (e.key == "Enter"){
-        // steps
-        // navigate to all bookmarks
-        // change the params 
+    if (e.key == "Enter") {
+      navigate("/home/all");
+      dispatch(filterBookmarks(query));
     }
   };
   return (

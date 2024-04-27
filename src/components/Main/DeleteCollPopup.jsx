@@ -4,7 +4,7 @@ import appwriteService from "../../appwrite/config";
 import { useNavigate } from "react-router-dom";
 import spinner from "../../assets/spinner.svg";
 import { deleteColl } from "../../features/collSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 function DeleteCollPopup({ setShowPopup, collection, userId, showPopup }) {
   const [loader, setLoader] = useState(false);
@@ -13,8 +13,15 @@ function DeleteCollPopup({ setShowPopup, collection, userId, showPopup }) {
   const dispatch = useDispatch();
   const popupRef = useRef(null);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     setLoader(true);
+
+    
+    const collectionId = await appwriteService.GetCollectionId({
+      User_ID: userId,
+      Collection_Name: collection,
+    });
+
     appwriteService
       .MoveCollectionToTrash({
         User_ID: userId,
@@ -22,21 +29,14 @@ function DeleteCollPopup({ setShowPopup, collection, userId, showPopup }) {
       })
       .then((response) => {
         console.log("Delete Collection Response ", response);
-        appwriteService
-        //gt coolection won't work because we delete the collectionin above call
-          .GetCollectionId({
-            User_ID: userId,
-            Collection_Name: collection,
+        console.log("Collection ID:", collectionId);
+        dispatch(
+          deleteColl({
+            collection_name: collection,
+            collection_id: collectionId,
           })
-          .then((res) => {
-            console.log(res);
-            dispatch(
-              deleteColl({
-                collection_name: collection,
-                collection_id: res,
-              })
-            );
-          });
+        );
+
         setShowPopup(false);
         setShowOverlay(false);
         navigate("/home/all");
@@ -47,6 +47,8 @@ function DeleteCollPopup({ setShowPopup, collection, userId, showPopup }) {
         setShowOverlay(false);
       });
   };
+
+
   return (
     <>
       {showOverlay && (
