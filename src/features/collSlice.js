@@ -18,8 +18,9 @@ const collSlice = createSlice({
         },
         deleteColl: (state, action) => {
             console.log("Delete Collection ", action.payload);
-            state.coll = state.coll.filter(item => item !== action.payload);
+            state.coll = state.coll.filter(item => item.collection_id !== action.payload.collection_id);
         }
+        
     }
 });
 

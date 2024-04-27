@@ -10,7 +10,8 @@ function Collections() {
       {collections.map((collection) => (
         <CollectionLink
           key={collection.collection_id}
-          collection={collection.collection_name}
+          collectionName={collection.collection_name}
+          collectionId={collection.collection_id}
         ></CollectionLink>
       ))}
     </>
