@@ -3,9 +3,9 @@ import appwriteService from "../../appwrite/config";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { setBookmarks as setStoreBookmarks } from "../../features/bookSlice";
-import CollectionHeader from "./CollectionHeader";
+import CollectionHeader from "./04_CollectionHeader";
 import BookmarkLink from "../BookmarkLink";
-import Container from "../Container";
+import { useNavigate } from "react-router-dom";
 
 function Bookmarks() {
   function formatDate(date) {
@@ -20,9 +20,10 @@ function Bookmarks() {
   // 2> Getting Collection Name
   const params = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // const { collection_id } = params;
-  const collection = "all";
+  // const { collectionId } = params;
+  const collectionId = "2";
 
   // * Loading and State Management
   const [loading, setLoading] = useState(true);
@@ -43,6 +44,7 @@ function Bookmarks() {
             $id: bookmark.$id,
             userId: bookmark.$id,
             collectionName: bookmark.Collection_Name,
+            collectionId: bookmark.Collection_ID,
             title: bookmark.Title,
             description: bookmark.Description,
             starred: bookmark.Starred,
@@ -61,20 +63,26 @@ function Bookmarks() {
   }, []);
 
   useEffect(() => {
-    setBookmarks(
-      collection === "all"
-        ? bookmarksFromStore
-        : bookmarksFromStore.filter(
-            (bookmark) => bookmark.collectionName === collection
-          )
-    );
-  }, [bookmarksFromStore, collection]);
+    if (collectionId === "1") {
+      setBookmarks(bookmarksFromStore);
+    } else {
+      const filteredBookmarks = bookmarksFromStore.filter(
+        (bookmark) => bookmark.collectionId === collectionId
+      );
+      if (filteredBookmarks.length > 0) {
+        setBookmarks(filteredBookmarks);
+      } else {
+        setBookmarks([]);
+        navigate("/home/All");
+      }
+    }
+  }, [bookmarksFromStore, collectionId]);
 
   return !loading ? (
     <>
       {/* * Render the CollectionHeader component */}
       <CollectionHeader
-        collection={collection}
+        collectionId={collectionId}
         userId={userId}
         setViewStyle={setViewStyle}
         viewStyle={viewStyle}

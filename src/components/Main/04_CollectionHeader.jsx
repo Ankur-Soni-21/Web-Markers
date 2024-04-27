@@ -1,16 +1,24 @@
 import React, { useEffect, useState } from "react";
 import Container from "../Container";
-import DeleteCollPopup from "./DeleteCollPopup";
-function CollectionHeader({ collection, userId, setViewStyle, viewStyle }) {
+import DeleteCollPopup from "./06_DeleteCollPopup";
+import { useSelector } from "react-redux";
+function CollectionHeader({ collectionId, userId, setViewStyle, viewStyle }) {
+  useEffect(() => {
+    console.log("Collection Header", collectionId);
+  }, []);
+
   const [showPopup, setShowPopup] = useState(false);
+  const collectionName = useSelector((state) => state.coll.coll).find(
+    (item) => item.collection_id === collectionId
+  ).collection_name;
 
   const handlePopupToggle = () => {
     setShowPopup((prevState) => !prevState);
   };
 
   useEffect(() => {
-    console.log(collection);
-  }, [collection]);
+    console.log(collectionId, collectionName);
+  }, []);
 
   return (
     <>
@@ -19,7 +27,7 @@ function CollectionHeader({ collection, userId, setViewStyle, viewStyle }) {
       >
         <Container className={`m-2 p-2`}>
           <h1 className="text-3xl font-semibold">
-            {collection === "all" ? "All Bookmarks" : collection}
+            {collectionId === "1" ? "All Bookmarks" : collectionName}
           </h1>
         </Container>
         <Container className={`m-1 p-1 flex flex-row gap-1`}>
@@ -60,10 +68,10 @@ function CollectionHeader({ collection, userId, setViewStyle, viewStyle }) {
       </Container>
       {showPopup && (
         <DeleteCollPopup
-          collection={collection}
+          collectionId={collectionId}
+          collectionName={collectionName}
           userId={userId}
           setShowPopup={setShowPopup}
-          showPopup={showPopup}
         ></DeleteCollPopup>
       )}
     </>

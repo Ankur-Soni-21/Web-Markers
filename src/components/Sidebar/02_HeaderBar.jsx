@@ -3,8 +3,8 @@ import Logo from "../Logo";
 import Button from "../Button";
 import { Link } from "react-router-dom";
 import Container from "../Container";
-import Collections from "./Collections";
-import AddCollection from "./AddCollection";
+import Collections from "./03_Collections";
+import AddCollection from "./04_AddCollection";
 
 function HeaderBar() {
   return (
@@ -13,17 +13,17 @@ function HeaderBar() {
       <Container className="flex flex-col items-start py-3">
         <Button>
           <i className="fa-regular fa-bookmark w-6"></i>
-          <Link to="/home/all">All Bookmarks</Link>
+          <Link to="/home/1">All Bookmarks</Link>
         </Button>
 
         <Button>
           <i className="fa-solid fa-box-open w-6"></i>
-          <Link to="/home/unsorted">Unsorted</Link>
+          <Link to="/home/2">Unsorted</Link>
         </Button>
 
         <Button>
           <i className="fa-solid fa-trash w-6"></i>
-          <Link to="/home/trash">Trash</Link>
+          <Link to="/home/3">Trash</Link>
         </Button>
       </Container>
 

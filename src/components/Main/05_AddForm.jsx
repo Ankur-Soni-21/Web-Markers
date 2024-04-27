@@ -9,13 +9,17 @@ import { useParams } from "react-router-dom";
 import spinner from "../../assets/spinner.svg";
 
 function AddForm() {
-  const collections = useSelector((state) => state.coll.coll);
+  const collections = useSelector((state) => state.coll.coll).filter(
+    (collection) =>
+      collection.collection_id !== "1" && collection.collection_id !== "3"
+  );
   const userId = useSelector((state) => state.auth.userData.$id);
   const dispatch = useDispatch();
   const params = useParams();
   const defaultCollection = params;
 
   const [selectedColl, setSeletedColl] = useState("Unsorted");
+  const [collectionId, setCollectionId] = useState("2");
   const [url, setUrl] = useState("");
   const apiUrl = `https://jsonlink.io/api/extract?url=${url}&api_key=${conf.jsonLinkMetaDataKey}`;
   const [isAdding, setIsAdding] = useState(false);
@@ -30,6 +34,15 @@ function AddForm() {
     const formattedDate = `${day}-${month}-${year}`;
     console.log(formattedDate);
     return formattedDate;
+  };
+
+  const setCollectionData = (e) => {
+    setSeletedColl(e.target.value);
+    console.log(e);
+    const selectedOption =
+      e.target.selectedOptions[0].getAttribute("data-collection");
+    console.log(selectedOption);
+    setCollectionId(selectedOption);
   };
 
   function isValidUrl(url) {
@@ -47,6 +60,7 @@ function AddForm() {
       return;
     }
     setIsAdding(true);
+    console.log("Collection ID [add bookmark]:", collectionId);
     fetch(apiUrl)
       .then((response) => {
         if (!response.ok) {
@@ -66,6 +80,7 @@ function AddForm() {
             Description: data.description,
             Starred: false,
             Is_Collection: false,
+            Collection_ID: collectionId,
           })
           .then((response) => {
             console.log(response);
@@ -79,6 +94,7 @@ function AddForm() {
                 starred: false,
                 URL: response.URL,
                 imageURL: response.Image_URL,
+                collectionId: response.Collection_ID,
                 createdAt: getDate(),
               })
             );
@@ -116,14 +132,12 @@ function AddForm() {
           defaultValue={defaultCollection ?? collections[0].collection_name}
           className=" px-1 text-slate-500 m-1 w-64 outline-none rounded-md py-2"
           id="collection"
-          onChange={(e) => setSeletedColl(e.target.value)}
+          onChange={(e) => setCollectionData(e)}
         >
-          <option value={"Unsorted"} className="text-black">
-            Unsorted
-          </option>
           {collections.map((collection) => (
             <option
               key={collection.collection_id}
+              data-collection={collection.collection_id}
               value={collection.collection_name}
               className="text-black"
             >

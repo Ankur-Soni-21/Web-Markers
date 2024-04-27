@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import HeaderBar from "./HeaderBar";
+import HeaderBar from "./02_HeaderBar";
 import appwriteService from "../../appwrite/config";
 import Container from "../Container";
 import { useDispatch, useSelector } from "react-redux";

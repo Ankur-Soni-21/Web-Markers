@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "./components/Sidebar/Sidebar";
+import Sidebar from "./components/Sidebar/01_Sidebar";
 
 import { login } from "./features/authSlice";
 import { useDispatch } from "react-redux";
 import authService from "./appwrite/auth";
-import MainContainer from "./components/Main/MainContainer";
+import MainContainer from "./components/Main/01_MainContainer";
 import { Outlet } from "react-router-dom";
 
 function App() {
