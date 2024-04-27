@@ -1,7 +1,7 @@
 import React from "react";
 import Container from "../Container";
-import SearchBar from "./SearchBar";
-import UserProfile from "./UserProfile";
+import SearchBar from "./02_SearchBar";
+import UserProfile from "./03_UserProfile";
 
 function Header() {
   return (

@@ -1,21 +1,34 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+
 import Button from "../Button";
 import Container from "../Container";
-import { useDispatch, useSelector } from "react-redux";
-import { addColl } from "../../features/collSlice";
-import { v4 as uuidv4 } from "uuid";
 import appwriteService from "../../appwrite/config";
+import { addColl } from "../../features/collSlice";
 
 function AddCollection() {
+  // Use State
   const [showInput, setShowInput] = useState(false);
   const [collectionName, setCollectionName] = useState("");
-  const allCollections = useSelector((state) => state.coll.coll);
+
+  // Redux
   const userId = useSelector((state) => state.auth.userData.$id);
+
+  // Other Functions
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const inputRef = useRef(null);
 
+  // Use Effect
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside, true);
+    return () =>
+      document.removeEventListener("click", handleClickOutside, true);
+  }, [showInput]);
+
+  // Handle Click Outside Function
   const handleClickOutside = (event) => {
     if (
       showInput &&
@@ -26,41 +39,22 @@ function AddCollection() {
     }
   };
 
-  useEffect(() => {
-    // Add event listener for outside clicks when the input field is open
-    document.addEventListener("click", handleClickOutside, true);
-
-    // Cleanup function to remove the event listener when the component unmounts
-    return () =>
-      document.removeEventListener("click", handleClickOutside, true);
-  }, [showInput]);
-
+  // Add Collection Function
   const addCollection = () => {
     setShowInput(!showInput);
   };
-  const checkDuplicateCollection = (name) => {
-    return allCollections.some(
-      (collection) => collection.collection_name === name
-    );
-  };
 
+  // Submit Collection Name
   const submitCollectionName = (e) => {
-    const res = checkDuplicateCollection(collectionName);
-    console.log(res);
-    if (res && e.key == "Enter") {
-      alert("Collection Already Exists");
-      return null;
-    }
+    if (e.key !== "Enter") return;
 
-    console.log(collectionName);
+
     if (collectionName === "") {
       console.log("Collection name cannot be empty");
-      return null;
+      return;
     }
-    if (e.key !== "Enter") return null;
 
     const newCollectionId = uuidv4();
-    console.log("a", newCollectionId);
 
     appwriteService
       .AddCollection({
@@ -84,7 +78,7 @@ function AddCollection() {
           setCollectionName("");
         }
       });
-    console.log("collectionid : ", newCollectionId);
+
     setCollectionName("");
   };
 
@@ -103,11 +97,9 @@ function AddCollection() {
             placeholder="Collection Name"
             className="p-1 text-gray-400 bg-black border-none outline-none "
             onChange={(e) => setCollectionName(e.target.value)}
-            onKeyDown={(e) => submitCollectionName(e)}
+            onKeyDown={submitCollectionName}
             value={collectionName}
           ></input>
-
-          {/* <Button className="invi" onClick={submitCollectionName}>Submit</Button> */}
         </Container>
       )}
     </>

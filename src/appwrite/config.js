@@ -12,7 +12,7 @@ export class Service {
         this.databases = new Databases(this.client);
     }
 
-    async AddBookmark({ User_ID, Title, Description, Starred = false, Collection_Name, URL, Image_URL, Is_Collection = false }) {
+    async AddBookmark({ User_ID, Title, Description, Starred = false, Collection_Name, URL, Image_URL, Is_Collection = false, Collection_ID }) {
         try {
             return await this.databases.createDocument(
                 conf.appwriteDatabaseId,
@@ -26,7 +26,8 @@ export class Service {
                     Collection_Name,
                     URL,
                     Image_URL,
-                    Is_Collection
+                    Is_Collection,
+                    Collection_ID
                 });
         } catch (error) {
             console.log("Appwrite service :: AddBokkmark :: error", error);
@@ -47,14 +48,15 @@ export class Service {
         }
     }
 
-    async UpdateBookmark({ Bookmark_ID, Collection_Name }) {
+    async UpdateBookmark({ Bookmark_ID, Collection_Name, Collection_ID }) {
         try {
             return await this.databases.updateDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionId,
                 Bookmark_ID,
                 {
-                    Collection_Name
+                    Collection_Name,
+                    Collection_ID
                 }
             );
         } catch (error) {
@@ -95,7 +97,8 @@ export class Service {
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionId,
                 [
-                    Query.equal("User_ID", User_ID)
+                    Query.equal("User_ID", User_ID),
+                    Query.equal("Is_Collection", false)
                 ]
             );
         } catch (error) {
@@ -103,14 +106,14 @@ export class Service {
         }
     }
 
-    async ListBookmarksByCollection({ User_ID, Collection_Name }) {
+    async ListBookmarksByCollection({ User_ID, Collection_ID }) {
         try {
             return await this.databases.listDocuments(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionId,
                 [
                     Query.equal("User_ID", User_ID),
-                    Query.equal("Collection_Name", Collection_Name)
+                    Query.equal("Collection_Name", Collection_ID)
                 ]
             );
         } catch (error) {
@@ -131,6 +134,20 @@ export class Service {
         }
     }
 
+    async MoveAllBookmarksToTrash({ User_ID }) {
+        const allBookmarks = await this.ListAllBookmarks({ User_ID });
+        allBookmarks.documents.forEach(async (bookmark) => {
+            await this.UpdateBookmark({ Bookmark_ID: bookmark.$id, Collection_Name: "Trash", Collection_ID: "3" });
+        });
+    }
+
+    async MoveUnsortedBookmarksToTrash({ User_ID }) {
+        const unsortedBookmarks = await this.ListBookmarksByCollection({ User_ID, Collection_ID: "2" });
+        unsortedBookmarks.documents.forEach(async (bookmark) => {
+            await this.UpdateBookmark({ Bookmark_ID: bookmark.$id, Collection_Name: "Trash", Collection_ID: "3" });
+        });
+    }
+
     // Collections
 
     async AddCollection({ User_ID, Collection_Name, Collection_ID }) {
@@ -147,16 +164,17 @@ export class Service {
                     Collection_Name,
                     URL: " ",
                     Image_URL: " ",
-                    Is_Collection: true
+                    Is_Collection: true,
+                    Collection_ID: Collection_ID
                 });
         } catch (error) {
             console.log("Appwrite service :: AddCollection :: error", error);
         }
     }
 
-    async RemoveCompleteCollection({ User_ID, Collection_Name }) {
+    async RemoveCompleteCollection({ User_ID, Collection_ID }) {
         try {
-            const deleteList = await this.ListBookmarksByCollection({ User_ID: User_ID, Collection_Name: Collection_Name });
+            const deleteList = await this.ListBookmarksByCollection({ User_ID: User_ID, Collection_ID: Collection_ID });
             console.log("Delete List", deleteList);
             deleteList.documents.forEach(async (doc) => {
                 await this.RemoveBookmark({ Bookmark_ID: doc.$id });
@@ -168,8 +186,8 @@ export class Service {
         }
     }
 
-    async RemoveCollection({ User_ID, Collection_Name }) {
-        const collection_id = await this.GetCollectionId({ User_ID: User_ID, Collection_Name: Collection_Name });
+    async RemoveCollection({ User_ID, Collection_ID }) {
+        const collection_id = await this.GetCollectionId({ User_ID: User_ID, Collection_ID: Collection_ID });
         if (collection_id) {
             await this.RemoveBookmark({ Bookmark_ID: collection_id }).then((res) => {
                 return res;
@@ -196,13 +214,12 @@ export class Service {
         }
     }
 
-
-    async MoveCollectionToTrash({ User_ID, Collection_Name }) {
+    async MoveCollectionToTrash({ User_ID, Collection_ID }) {
         try {
-            await this.RemoveCollection({ User_ID, Collection_Name });
-            const bookmarks = await this.ListBookmarksByCollection({ User_ID, Collection_Name });
+            await this.RemoveCollection({ User_ID, Collection_ID });
+            const bookmarks = await this.ListBookmarksByCollection({ User_ID, Collection_ID });
             bookmarks.documents.forEach(async (bookmark) => {
-                await this.UpdateBookmark({ Bookmark_ID: bookmark.$id, Collection_Name: "Trash" });
+                await this.UpdateBookmark({ Bookmark_ID: bookmark.$id, Collection_Name: "Trash", Collection_ID: "3" });
             });
             return true;
         } catch (error) {
@@ -210,14 +227,14 @@ export class Service {
         }
     }
 
-    async GetCollectionId({ User_ID, Collection_Name }) {
+    async GetCollectionId({ User_ID, Collection_ID }) {
         try {
             const collections = await this.databases.listDocuments(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionId,
                 [
                     Query.equal("User_ID", User_ID),
-                    Query.equal("Collection_Name", Collection_Name),
+                    Query.equal("Collection_ID", Collection_ID),
                     Query.equal("Is_Collection", true)
                 ]
             );

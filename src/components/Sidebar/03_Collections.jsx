@@ -3,7 +3,12 @@ import CollectionLink from "../CollectionLink";
 import { useSelector } from "react-redux";
 
 function Collections() {
-  const collections = useSelector((state) => state.coll.coll);
+  const collections = useSelector((state) => state.coll.coll).filter(
+    (collection) =>
+      collection.collection_id !== "1" &&
+      collection.collection_id !== "2" &&
+      collection.collection_id !== "3"
+  );
 
   return (
     <>

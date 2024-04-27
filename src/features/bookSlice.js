@@ -24,9 +24,18 @@ const bookSlice = createSlice({
                 bookmark.description.toLowerCase().includes(query)
             );
         },
+        moveToTrash: (state, action) => {
+            state.bookmarks = state.bookmarks.map(bookmark => {
+                if (bookmark.collectionId === action.payload) {
+                    bookmark.collectionId = "3";
+                    bookmark.collectionName = "Trash";
+                }
+                return bookmark;
+            })
+        }
 
     }
 })
 
-export const { setBookmarks, filterBookmarks, addBookmark, removeBookmark } = bookSlice.actions;
+export const { setBookmarks, filterBookmarks, moveToTrash, addBookmark, removeBookmark } = bookSlice.actions;
 export default bookSlice.reducer;
