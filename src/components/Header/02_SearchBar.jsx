@@ -4,13 +4,20 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { filterBookmarks } from "../../features/bookSlice";
 function SearchBar() {
-  const [query, setQuery] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const handleNavigate = (e) => {
+    console.log("query:", e.target.value);
+    navigate(`/home/1/${e.target.value}`);
+    dispatch(filterBookmarks(e.target.value));
+  };
   const handleSubmit = (e) => {
     if (e.key == "Enter") {
-      navigate("/home/all");
-      dispatch(filterBookmarks(query));
+      console.log(e.key);
+      console.log("query", e.target.value);
+      navigate(`/home/1/${e.target.value}`);
+      dispatch(filterBookmarks(e.target.value));
     }
   };
   return (
@@ -19,7 +26,7 @@ function SearchBar() {
     >
       <i className="fa-solid fa-magnifying-glass"></i>
       <input
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => handleNavigate(e)}
         placeholder="Search.."
         className="bg-slate-200 outline-none"
         onKeyDown={(e) => handleSubmit(e)}

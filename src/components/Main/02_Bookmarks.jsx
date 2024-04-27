@@ -16,14 +16,18 @@ function Bookmarks() {
   }
   // 1> Getting User ID
   const userId = useSelector((state) => state.auth.userData.$id);
+  const filteredBookmarks = useSelector(
+    (state) => state.book.filteredBookmarks
+  );
 
   // 2> Getting Collection Name
   const params = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const { collectionId } = params;
-  const collectionId = "2";
+  // const { collectionId, query } = params;
+  const query = true;
+  const collectionId = "1";
 
   // * Loading and State Management
   const [loading, setLoading] = useState(true);
@@ -64,7 +68,9 @@ function Bookmarks() {
 
   useEffect(() => {
     if (collectionId === "1") {
-      setBookmarks(bookmarksFromStore);
+      // console.log("Filtered Bookmarks", filteredBookmarks);
+      if (query) setBookmarks(filteredBookmarks);
+      else setBookmarks(bookmarksFromStore);
     } else {
       const filteredBookmarks = bookmarksFromStore.filter(
         (bookmark) => bookmark.collectionId === collectionId
@@ -73,10 +79,10 @@ function Bookmarks() {
         setBookmarks(filteredBookmarks);
       } else {
         setBookmarks([]);
-        navigate("/home/All");
+        navigate("/home/1");
       }
     }
-  }, [bookmarksFromStore, collectionId]);
+  }, [bookmarksFromStore, collectionId, filteredBookmarks, query]);
 
   return !loading ? (
     <>
