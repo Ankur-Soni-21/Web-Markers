@@ -43,7 +43,7 @@ function DeleteCollPopup({
           })
         );
         moveBookmarksToTrash();
-        navigate("/home/all");
+        navigate("/home/1");
       })
       .catch((error) => {
         console.error("Delete Error", error);

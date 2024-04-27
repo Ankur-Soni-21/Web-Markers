@@ -2,27 +2,60 @@ import React, { useState } from "react";
 import Container from "./Container";
 import appwriteService from "../appwrite/config";
 import spinner from "../assets/spinner.svg";
+import { moveToTrash } from "../features/bookSlice";
+import { useDispatch } from "react-redux";
+import tempImage from "../assets/logo2.svg";
 
 function BookmarkLink({ bookmark, viewStyle }) {
   const [book, setBook] = useState(bookmark);
   const [deleting, setDeleting] = useState(false);
 
-  const handleDelete = () => {
+  const dispatch = useDispatch();
+
+  const deletePermanently = () => {
+    setDeleting(true);
+    appwriteService
+      .RemoveBookmark({ Bookmark_ID: book.$id })
+      .then((res) => {
+        console.log("Delete Bookmark : ", res);
+        setBook(null);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setDeleting(false);
+      });
+  };
+
+  const handleMoveToTrash = () => {
     setDeleting(true);
     appwriteService
       .UpdateBookmark({
         Bookmark_ID: book.$id,
         Collection_Name: "Trash",
+        Collection_ID: "3",
       })
       .then((res) => {
         console.log("Delete Bookmark : ", res);
-        setDeleting(false);
         setBook(null);
       })
       .catch((error) => {
         console.log(error);
+      })
+      .finally(() => {
         setDeleting(false);
       });
+
+    dispatch(moveToTrash(book.$id));
+  };
+
+  const handleDelete = () => {
+    if (book.collectionId === "3") {
+      deletePermanently();
+    } else {
+      handleMoveToTrash();
+    }
   };
 
   const handleOpenInNewTab = () => {
@@ -50,7 +83,7 @@ function BookmarkLink({ bookmark, viewStyle }) {
           >
             <img
               className="w-24 h-24 object-fill"
-              src={book.imageURL}
+              src={book.imageURL || tempImage}
               alt={book.title}
             />
           </Container>
