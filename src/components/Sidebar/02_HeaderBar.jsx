@@ -13,17 +13,23 @@ function HeaderBar() {
       <Container className="flex flex-col items-start py-3">
         <Button>
           <i className="fa-regular fa-bookmark w-6"></i>
-          <Link to="/home/1">All Bookmarks</Link>
+          <Link to="/home/1" className="w-full text-start">
+            All Bookmarks
+          </Link>
         </Button>
 
         <Button>
           <i className="fa-solid fa-box-open w-6"></i>
-          <Link to="/home/2">Unsorted</Link>
+          <Link to="/home/2" className="w-full text-start">
+            Unsorted
+          </Link>
         </Button>
 
         <Button>
           <i className="fa-solid fa-trash w-6"></i>
-          <Link to="/home/3">Trash</Link>
+          <Link to="/home/3" className="w-full text-start">
+            Trash
+          </Link>
         </Button>
       </Container>
 
