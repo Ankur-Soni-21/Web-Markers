@@ -4,7 +4,11 @@ import appwriteService from "../../appwrite/config";
 import { useNavigate } from "react-router-dom";
 import spinner from "../../assets/spinner.svg";
 import { deleteColl } from "../../features/collSlice";
-import { moveToTrash } from "../../features/bookSlice";
+import {
+  moveAllBookmarksToTrash,
+  moveBookmarksToTrashByCollection,
+  removeBookmarksByCollection,
+} from "../../features/bookSlice";
 import { useDispatch } from "react-redux";
 
 // Now if Collection id === "3" i.e trash we will remove the bookmarks from the collection but not delete the collection
@@ -23,7 +27,7 @@ function DeleteCollPopup({
   const popupRef = useRef(null);
 
   const moveBookmarksToTrash = () => {
-    dispatch(moveToTrash(collectionId));
+    dispatch(moveBookmarksToTrashByCollection(collectionId));
   };
 
   const deleteUserCollection = async () => {
@@ -62,7 +66,7 @@ function DeleteCollPopup({
       })
       .then((response) => {
         console.log("Delete All Collection Response ", response);
-        moveBookmarksToTrash();
+        dispatch(moveAllBookmarksToTrash());
       })
       .catch((error) => {
         console.error("Delete All Error", error);
@@ -101,9 +105,11 @@ function DeleteCollPopup({
     appwriteService
       .RemoveAllBookmarks({
         User_ID: userId,
+        Collection_ID: collectionId,
       })
       .then((response) => {
         console.log("Delete All Bookmarks Response ", response);
+        dispatch(removeBookmarksByCollection(collectionId));
       })
       .catch((error) => {
         console.error("Delete All Bookmarks Error", error);

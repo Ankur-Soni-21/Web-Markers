@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import Container from "./Container";
 import appwriteService from "../appwrite/config";
 import spinner from "../assets/spinner.svg";
-import { moveToTrash } from "../features/bookSlice";
+import { moveBookmarksToTrashByCollection } from "../features/bookSlice";
 import { useDispatch } from "react-redux";
 import tempImage from "../assets/logo2.svg";
+import { removeBookmark, moveBookmarkToTrash } from "../features/bookSlice";
 
 function BookmarkLink({ bookmark, viewStyle }) {
   const [book, setBook] = useState(bookmark);
@@ -18,6 +19,7 @@ function BookmarkLink({ bookmark, viewStyle }) {
       .RemoveBookmark({ Bookmark_ID: book.$id })
       .then((res) => {
         console.log("Delete Bookmark : ", res);
+        dispatch(removeBookmark(book.$id));
         setBook(null);
       })
       .catch((error) => {
@@ -38,6 +40,7 @@ function BookmarkLink({ bookmark, viewStyle }) {
       })
       .then((res) => {
         console.log("Delete Bookmark : ", res);
+        dispatch(moveBookmarkToTrash(book.$id));
         setBook(null);
       })
       .catch((error) => {
@@ -47,7 +50,7 @@ function BookmarkLink({ bookmark, viewStyle }) {
         setDeleting(false);
       });
 
-    dispatch(moveToTrash(book.$id));
+    dispatch(moveBookmarksToTrashByCollection(book.$id));
   };
 
   const handleDelete = () => {

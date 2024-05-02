@@ -15,8 +15,20 @@ const bookSlice = createSlice({
             state.bookmarks.push(action.payload);
         },
         removeBookmark: (state, action) => {
-            state.bookmarks = state.bookmarks.filter(bookmark => bookmark.id !== action.payload);
+            console.log("Remove Bookmark", action.payload);
+            state.bookmarks = state.bookmarks.filter(bookmark => bookmark.$id !== action.payload);
+            console.log("Bookmarks", state.bookmarks)
         },
+        moveBookmarkToTrash: (state, action) => {
+            state.bookmarks = state.bookmarks.map(bookmark => {
+                if (bookmark.$id === action.payload) {
+                    bookmark.collectionId = "3";
+                    bookmark.collectionName = "Trash";
+                }
+                return bookmark;
+            })
+        },
+
         filterBookmarks: (state, action) => {
             console.log("Action", action.payload);
             const query = action.payload?.toLowerCase();
@@ -26,7 +38,7 @@ const bookSlice = createSlice({
             );
             console.log(state.filteredBookmarks);
         },
-        moveToTrash: (state, action) => {
+        moveBookmarksToTrashByCollection: (state, action) => {
             state.bookmarks = state.bookmarks.map(bookmark => {
                 if (bookmark.collectionId === action.payload) {
                     bookmark.collectionId = "3";
@@ -34,10 +46,19 @@ const bookSlice = createSlice({
                 }
                 return bookmark;
             })
+        },
+        removeBookmarksByCollection: (state, action) => {
+            state.bookmarks = state.bookmarks.filter(bookmark => bookmark.collectionId !== action.payload);
+        },
+        moveAllBookmarksToTrash: (state) => {
+            state.bookmarks = state.bookmarks.map(bookmark => {
+                bookmark.collectionId = "3";
+                bookmark.collectionName = "Trash";
+                return bookmark;
+            })
         }
-
     }
 })
 
-export const { setBookmarks, filterBookmarks, moveToTrash, addBookmark, removeBookmark } = bookSlice.actions;
+export const { setBookmarks, filterBookmarks, addBookmark, removeBookmark, moveBookmarkToTrash, moveAllBookmarksToTrash, moveBookmarksToTrashByCollection, removeBookmarksByCollection } = bookSlice.actions;
 export default bookSlice.reducer;

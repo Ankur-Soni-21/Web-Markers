@@ -113,7 +113,7 @@ export class Service {
                 conf.appwriteCollectionId,
                 [
                     Query.equal("User_ID", User_ID),
-                    Query.equal("Collection_Name", Collection_ID)
+                    Query.equal("Collection_ID", Collection_ID)
                 ]
             );
         } catch (error) {
@@ -121,9 +121,10 @@ export class Service {
         }
     }
 
-    async RemoveAllBookmarks({ User_ID }) {
+    async RemoveAllBookmarks({ User_ID, Collection_ID }) {
         try {
-            const bookmarks = await this.ListAllBookmarks({ User_ID });
+            const bookmarks = await this.ListBookmarksByCollection({ User_ID: User_ID, Collection_ID: Collection_ID });
+            console.log("Bookmarks", bookmarks);
             bookmarks.documents.forEach(async (doc) => {
                 await this.RemoveBookmark({ Bookmark_ID: doc.$id });
             });
@@ -135,14 +136,14 @@ export class Service {
     }
 
     async MoveAllBookmarksToTrash({ User_ID }) {
-        const allBookmarks = await this.ListAllBookmarks({ User_ID });
+        const allBookmarks = await this.ListAllBookmarks({ User_ID: User_ID });
         allBookmarks.documents.forEach(async (bookmark) => {
             await this.UpdateBookmark({ Bookmark_ID: bookmark.$id, Collection_Name: "Trash", Collection_ID: "3" });
         });
     }
 
     async MoveUnsortedBookmarksToTrash({ User_ID }) {
-        const unsortedBookmarks = await this.ListBookmarksByCollection({ User_ID, Collection_ID: "2" });
+        const unsortedBookmarks = await this.ListBookmarksByCollection({ User_ID: User_ID, Collection_ID: "2" });
         unsortedBookmarks.documents.forEach(async (bookmark) => {
             await this.UpdateBookmark({ Bookmark_ID: bookmark.$id, Collection_Name: "Trash", Collection_ID: "3" });
         });
@@ -186,19 +187,6 @@ export class Service {
         }
     }
 
-    async RemoveCollection({ User_ID, Collection_ID }) {
-        const collection_id = await this.GetCollectionId({ User_ID: User_ID, Collection_ID: Collection_ID });
-        if (collection_id) {
-            await this.RemoveBookmark({ Bookmark_ID: collection_id }).then((res) => {
-                return res;
-            });
-        }
-        else {
-            console.log("Collection not found");
-            return false;
-        }
-    }
-
     async ListCollections({ User_ID }) {
         try {
             return await this.databases.listDocuments(
@@ -216,12 +204,21 @@ export class Service {
 
     async MoveCollectionToTrash({ User_ID, Collection_ID }) {
         try {
-            await this.RemoveCollection({ User_ID, Collection_ID });
-            const bookmarks = await this.ListBookmarksByCollection({ User_ID, Collection_ID });
-            bookmarks.documents.forEach(async (bookmark) => {
-                await this.UpdateBookmark({ Bookmark_ID: bookmark.$id, Collection_Name: "Trash", Collection_ID: "3" });
-            });
-            return true;
+            const res = await this.RemoveBookmark({ Bookmark_ID: Collection_ID });
+            console.log("Collection Removed : ", res);
+            console.log("Collection ID", Collection_ID);
+            console.log("User ID", User_ID);
+            const bookmarks = await this.ListBookmarksByCollection({ User_ID: User_ID, Collection_ID: Collection_ID });
+            console.log("Bookmarks", bookmarks);
+            for (const bookmark of bookmarks.documents) {
+                try {
+                    let res = await this.UpdateBookmark({ Bookmark_ID: bookmark.$id, Collection_Name: "Trash", Collection_ID: "3" })
+                    console.log("Update Response : ", res);
+                } catch (error) {
+                    throw error;
+                }
+            }
+            return true
         } catch (error) {
             console.log("Appwrite service :: MoveCollectionToTrash :: error", error);
         }
