@@ -5,7 +5,8 @@ import { useParams } from "react-router-dom";
 import { setBookmarks as setStoreBookmarks } from "../../features/bookSlice";
 import CollectionHeader from "./04_CollectionHeader";
 import BookmarkLink from "../BookmarkLink";
-import { useNavigate } from "react-router-dom";
+import Container from "../Container";
+import EmptyCollectionImage from "../../assets/EmptyCollection.webp";
 
 function Bookmarks() {
   function formatDate(date) {
@@ -23,20 +24,23 @@ function Bookmarks() {
   // 2> Getting Collection Name
   const params = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  // const { collectionId, query } = params;
-  const query = true;
-  const collectionId = "1";
+  const { collectionId, query } = params;
 
   // * Loading and State Management
   const [loading, setLoading] = useState(true);
   const bookmarksFromStore = useSelector((state) => state.book.bookmarks);
+  const allBookmarks = bookmarksFromStore.filter(
+    (bookmark) => bookmark.collectionName !== "Trash"
+  );
   const [bookmarks, setBookmarks] = useState([]);
   const [viewStyle, setViewStyle] = useState(true);
 
   // 4> Fetching all the bookmarks
   useEffect(() => {
+    // console.log("Params", params);
+    // console.log("Query", query);
+    // console.log("Collection ID", collectionId);
     appwriteService
       .ListAllBookmarks({
         User_ID: userId,
@@ -70,7 +74,7 @@ function Bookmarks() {
     if (collectionId === "1") {
       // console.log("Filtered Bookmarks", filteredBookmarks);
       if (query) setBookmarks(filteredBookmarks);
-      else setBookmarks(bookmarksFromStore);
+      else setBookmarks(allBookmarks);
     } else {
       const filteredBookmarks = bookmarksFromStore.filter(
         (bookmark) => bookmark.collectionId === collectionId
@@ -79,7 +83,7 @@ function Bookmarks() {
         setBookmarks(filteredBookmarks);
       } else {
         setBookmarks([]);
-        navigate("/home/1");
+        // navigate("/home/1");
       }
     }
   }, [bookmarksFromStore, collectionId, filteredBookmarks, query]);
@@ -95,13 +99,30 @@ function Bookmarks() {
       />
 
       {/* * Render the BookmarkLink components */}
-      {bookmarks.map((bookmark) => (
-        <BookmarkLink
-          key={bookmark.$id}
-          bookmark={bookmark}
-          viewStyle={viewStyle}
-        ></BookmarkLink>
-      ))}
+      {bookmarks.length !== 0 ? (
+        <div>
+          {bookmarks.map((bookmark) => (
+            <BookmarkLink
+              key={bookmark.$id}
+              bookmark={bookmark}
+              viewStyle={viewStyle}
+            ></BookmarkLink>
+          ))}
+        </div>
+      ) : (
+        <Container
+          className={`flex flex-col items-center justify-center mt-10`}
+        >
+          <img
+            src={EmptyCollectionImage}
+            alt=""
+            className="rounded-full w-1/2"
+          />
+          <p className="text-2xl font-normal mt-4 text-slate-500">
+            This Collection has no Bookmarks
+          </p>
+        </Container>
+      )}
     </>
   ) : null;
 }

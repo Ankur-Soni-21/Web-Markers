@@ -3,21 +3,22 @@ import Container from "../Container";
 import DeleteCollPopup from "./06_DeleteCollPopup";
 import { useSelector } from "react-redux";
 function CollectionHeader({ collectionId, userId, setViewStyle, viewStyle }) {
-  useEffect(() => {
-    console.log("Collection Header", collectionId);
-  }, []);
-
   const [showPopup, setShowPopup] = useState(false);
-  const collectionName = useSelector((state) => state.coll.coll).find(
+  const colls = useSelector((state) => state.coll.coll);
+  const collection = useSelector((state) => state.coll.coll).find(
     (item) => item.collection_id === collectionId
-  ).collection_name;
+  );
+  const collectionName = collection
+    ? collection.collection_name
+    : "All Bookmarks";
 
   const handlePopupToggle = () => {
     setShowPopup((prevState) => !prevState);
   };
 
   useEffect(() => {
-    console.log(collectionId, collectionName);
+    // console.log(colls);
+    // console.log(collectionId, collectionName);
   }, []);
 
   return (

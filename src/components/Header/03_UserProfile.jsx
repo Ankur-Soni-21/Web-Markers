@@ -4,12 +4,17 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import authService from "../../appwrite/auth";
 import spinner from "../../assets/spinner.svg";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../features/authSlice";
+import { useDispatch } from "react-redux";
 
 function UserProfile() {
   // Get user name and data from Redux store
   const userName = useSelector((state) => state.auth.userData)?.name;
   const userData = useSelector((state) => state.auth.userData);
   const initials = userName?.charAt(0);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // State variables
   const [menuPopup, setMenuPopup] = useState(false);
@@ -26,7 +31,9 @@ function UserProfile() {
     authService
       .logout()
       .then((response) => {
-        console.log("Logged Out", response);
+        dispatch(logout());
+        navigate("/login");
+        // console.log("Logged Out", response);
         setLoader(false);
       })
       .catch((error) => {
@@ -37,7 +44,7 @@ function UserProfile() {
 
   // Log user data when menuPopup changes
   useEffect(() => {
-    console.log("User Data", userData);
+    // console.log("User Data", userData);
   }, [menuPopup]);
 
   return (
