@@ -15,6 +15,7 @@ dist-ssr
 # Testing Files
 testComponentAuth.jsx
 testComponentBookmark.jsx
+src/webAssignment
 
 # Editor directories and files
 .vscode/*
