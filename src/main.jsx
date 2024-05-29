@@ -9,12 +9,15 @@ import store from "./store/store.js";
 // router
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 // components + pages
-import HeroPage from "./pages/HeroPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import App from "./App.jsx";
+import authService from "./appwrite/auth.js";
 
+// check if user is logged in
+let user = await authService.getCurrentUser();
+console.log("user", user);
 const Router = createBrowserRouter([
   {
     path: "/",
@@ -22,7 +25,7 @@ const Router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <HeroPage />,
+        element: user ? <HomePage /> : <SignupPage />,
       },
       {
         path: "/login",

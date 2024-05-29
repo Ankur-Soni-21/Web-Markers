@@ -14,7 +14,9 @@ function AddCollection() {
   const [collectionName, setCollectionName] = useState("");
 
   // Redux
-  const userId = useSelector((state) => state.auth.userData.$id);
+  const userId = useSelector((state) =>
+    state.auth.userData ? state.auth.userData.$id : null
+  );
 
   // Other Functions
   const navigate = useNavigate();
@@ -47,7 +49,6 @@ function AddCollection() {
   // Submit Collection Name
   const submitCollectionName = (e) => {
     if (e.key !== "Enter") return;
-
 
     if (collectionName === "") {
       console.log("Collection name cannot be empty");
