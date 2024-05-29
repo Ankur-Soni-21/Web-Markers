@@ -9,7 +9,7 @@ import AddCollection from "./04_AddCollection";
 function HeaderBar() {
   return (
     <>
-      <Container className={'mb-10'}>
+      <Container>
         <Logo></Logo>
       </Container>
       <Container className="flex flex-col items-start py-3">
