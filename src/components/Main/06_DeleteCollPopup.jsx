@@ -31,15 +31,15 @@ function DeleteCollPopup({
   };
 
   const deleteUserCollection = async () => {
-    console.log("Deleting User Collection", collectionId, collectionName);
+    //console.log("Deleting User Collection", collectionId, collectionName);
     appwriteService
       .MoveCollectionToTrash({
         User_ID: userId,
         Collection_ID: collectionId,
       })
       .then((response) => {
-        console.log("Delete Collection Response ", response);
-        console.log("Deleted Collection ID:", collectionId);
+        //console.log("Delete Collection Response ", response);
+        //console.log("Deleted Collection ID:", collectionId);
         dispatch(
           deleteColl({
             collection_name: collectionName,
@@ -59,13 +59,13 @@ function DeleteCollPopup({
   };
 
   const deleteAllCollection = async () => {
-    console.log("Deleting All Collection", collectionId, collectionName);
+    //console.log("Deleting All Collection", collectionId, collectionName);
     appwriteService
       .MoveAllBookmarksToTrash({
         User_ID: userId,
       })
       .then((response) => {
-        console.log("Delete All Collection Response ", response);
+        //console.log("Delete All Collection Response ", response);
         dispatch(moveAllBookmarksToTrash());
       })
       .catch((error) => {
@@ -78,13 +78,13 @@ function DeleteCollPopup({
   };
 
   const deleteUnsortedCollection = async () => {
-    console.log("Deleting Unsorted Collection", collectionId, collectionName);
+    //console.log("Deleting Unsorted Collection", collectionId, collectionName);
     appwriteService
       .MoveUnsortedBookmarksToTrash({
         User_ID: userId,
       })
       .then((response) => {
-        console.log("Delete Unsorted Collection Response ", response);
+        //console.log("Delete Unsorted Collection Response ", response);
         moveBookmarksToTrash();
       })
       .catch((error) => {
@@ -97,18 +97,13 @@ function DeleteCollPopup({
   };
 
   const deleteBookmarksPermanently = async () => {
-    console.log(
-      "Deleting All Bookmarks Permanently",
-      collectionId,
-      collectionName
-    );
     appwriteService
       .RemoveAllBookmarks({
         User_ID: userId,
         Collection_ID: collectionId,
       })
       .then((response) => {
-        console.log("Delete All Bookmarks Response ", response);
+        //console.log("Delete All Bookmarks Response ", response);
         dispatch(removeBookmarksByCollection(collectionId));
       })
       .catch((error) => {

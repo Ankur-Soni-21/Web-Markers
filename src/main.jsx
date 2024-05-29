@@ -17,7 +17,7 @@ import authService from "./appwrite/auth.js";
 
 // check if user is logged in
 let user = await authService.getCurrentUser();
-console.log("user", user);
+// le.log("user", user);
 const Router = createBrowserRouter([
   {
     path: "/",

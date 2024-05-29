@@ -19,13 +19,13 @@ function HomePage() {
       .getCurrentUser()
       .then((response) => {
         navigate("/home/1");
-        console.log("App :: useEffect :: response", response);
+        //console.log("App :: useEffect :: response", response);
         dispatch(login(response));
         setLoading(false);
       })
       .catch((error) => {
         navigate("/login");
-        console.log("App :: useEffect :: error", error);
+        //console.log("App :: useEffect :: error", error);
         setLoading(false);
       });
   }, []);
