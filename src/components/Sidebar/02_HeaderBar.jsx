@@ -9,7 +9,9 @@ import AddCollection from "./04_AddCollection";
 function HeaderBar() {
   return (
     <>
-      <Logo></Logo>
+      <Container className={'mb-10'}>
+        <Logo></Logo>
+      </Container>
       <Container className="flex flex-col items-start py-3">
         <Button>
           <i className="fa-regular fa-bookmark w-6"></i>
