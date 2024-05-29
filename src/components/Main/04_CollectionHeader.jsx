@@ -17,8 +17,8 @@ function CollectionHeader({ collectionId, userId, setViewStyle, viewStyle }) {
   };
 
   useEffect(() => {
-    // console.log(colls);
-    // console.log(collectionId, collectionName);
+    // //console.log(colls);
+    // //console.log(collectionId, collectionName);
   }, []);
 
   return (

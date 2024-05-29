@@ -6,9 +6,9 @@ import AddBookmark from "./03_AddBookmark";
 
 function MainContainer() {
   useEffect(() => {
-    // console.log("MainContainer mounted");
+    // //console.log("MainContainer mounted");
     return () => {
-      // console.log("MainContainer unmounted");
+      // //console.log("MainContainer unmounted");
     };
   }, []);
   return (

@@ -15,9 +15,9 @@ const bookSlice = createSlice({
             state.bookmarks.push(action.payload);
         },
         removeBookmark: (state, action) => {
-            console.log("Remove Bookmark", action.payload);
+            //console.log("Remove Bookmark", action.payload);
             state.bookmarks = state.bookmarks.filter(bookmark => bookmark.$id !== action.payload);
-            console.log("Bookmarks", state.bookmarks)
+            //console.log("Bookmarks", state.bookmarks)
         },
         moveBookmarkToTrash: (state, action) => {
             state.bookmarks = state.bookmarks.map(bookmark => {
@@ -30,13 +30,13 @@ const bookSlice = createSlice({
         },
 
         filterBookmarks: (state, action) => {
-            console.log("Action", action.payload);
+            //console.log("Action", action.payload);
             const query = action.payload?.toLowerCase();
             state.filteredBookmarks = state.bookmarks.filter(bookmark =>
                 bookmark.title.toLowerCase().includes(query) ||
                 bookmark.description.toLowerCase().includes(query)
             );
-            console.log(state.filteredBookmarks);
+            //console.log(state.filteredBookmarks);
         },
         moveBookmarksToTrashByCollection: (state, action) => {
             state.bookmarks = state.bookmarks.map(bookmark => {

@@ -30,7 +30,7 @@ export class Service {
                     Collection_ID
                 });
         } catch (error) {
-            console.log("Appwrite service :: AddBokkmark :: error", error);
+            //console.log("Appwrite service :: AddBokkmark :: error", error);
         }
     }
 
@@ -43,7 +43,7 @@ export class Service {
             );
             return true;
         } catch (error) {
-            console.log("Appwrite service :: RemoveBookmark :: error", error);
+            //console.log("Appwrite service :: RemoveBookmark :: error", error);
             return false;
         }
     }
@@ -60,7 +60,7 @@ export class Service {
                 }
             );
         } catch (error) {
-            console.log("Appwrite service :: UpdateBookmark :: error", error);
+            //console.log("Appwrite service :: UpdateBookmark :: error", error);
         }
     }
 
@@ -75,7 +75,7 @@ export class Service {
                 }
             );
         } catch (error) {
-            console.log("Appwrite service :: ToggleStarred :: error", error);
+            //console.log("Appwrite service :: ToggleStarred :: error", error);
         }
     }
 
@@ -87,7 +87,7 @@ export class Service {
                 Bookmark_ID
             );
         } catch (error) {
-            console.log("Appwrite service :: GetBookmark :: error", error);
+            //console.log("Appwrite service :: GetBookmark :: error", error);
         }
     }
 
@@ -102,7 +102,7 @@ export class Service {
                 ]
             );
         } catch (error) {
-            console.log("Appwrite service :: ListBookmarks :: error", error);
+            //console.log("Appwrite service :: ListBookmarks :: error", error);
         }
     }
 
@@ -117,20 +117,20 @@ export class Service {
                 ]
             );
         } catch (error) {
-            console.log("Appwrite service :: ListBookmarksByCollection :: error", error);
+            //console.log("Appwrite service :: ListBookmarksByCollection :: error", error);
         }
     }
 
     async RemoveAllBookmarks({ User_ID, Collection_ID }) {
         try {
             const bookmarks = await this.ListBookmarksByCollection({ User_ID: User_ID, Collection_ID: Collection_ID });
-            console.log("Bookmarks", bookmarks);
+            //console.log("Bookmarks", bookmarks);
             bookmarks.documents.forEach(async (doc) => {
                 await this.RemoveBookmark({ Bookmark_ID: doc.$id });
             });
             return true;
         } catch (error) {
-            console.log("Appwrite service :: RemoveAllBookmarks :: error", error);
+            //console.log("Appwrite service :: RemoveAllBookmarks :: error", error);
             return false;
         }
     }
@@ -169,20 +169,20 @@ export class Service {
                     Collection_ID: Collection_ID
                 });
         } catch (error) {
-            console.log("Appwrite service :: AddCollection :: error", error);
+            //console.log("Appwrite service :: AddCollection :: error", error);
         }
     }
 
     async RemoveCompleteCollection({ User_ID, Collection_ID }) {
         try {
             const deleteList = await this.ListBookmarksByCollection({ User_ID: User_ID, Collection_ID: Collection_ID });
-            console.log("Delete List", deleteList);
+            //console.log("Delete List", deleteList);
             deleteList.documents.forEach(async (doc) => {
                 await this.RemoveBookmark({ Bookmark_ID: doc.$id });
             });
             return true;
         } catch (error) {
-            console.log("Appwrite service :: RemoveCollection :: error", error);
+            //console.log("Appwrite service :: RemoveCollection :: error", error);
             return false;
         }
     }
@@ -198,29 +198,29 @@ export class Service {
                 ]
             );
         } catch (error) {
-            console.log("Appwrite service :: ListCollections :: error", error);
+            //console.log("Appwrite service :: ListCollections :: error", error);
         }
     }
 
     async MoveCollectionToTrash({ User_ID, Collection_ID }) {
         try {
             const res = await this.RemoveBookmark({ Bookmark_ID: Collection_ID });
-            console.log("Collection Removed : ", res);
-            console.log("Collection ID", Collection_ID);
-            console.log("User ID", User_ID);
+            //console.log("Collection Removed : ", res);
+            //console.log("Collection ID", Collection_ID);
+            //console.log("User ID", User_ID);
             const bookmarks = await this.ListBookmarksByCollection({ User_ID: User_ID, Collection_ID: Collection_ID });
-            console.log("Bookmarks", bookmarks);
+            //console.log("Bookmarks", bookmarks);
             for (const bookmark of bookmarks.documents) {
                 try {
                     let res = await this.UpdateBookmark({ Bookmark_ID: bookmark.$id, Collection_Name: "Trash", Collection_ID: "3" })
-                    console.log("Update Response : ", res);
+                    //console.log("Update Response : ", res);
                 } catch (error) {
                     throw error;
                 }
             }
             return true
         } catch (error) {
-            console.log("Appwrite service :: MoveCollectionToTrash :: error", error);
+            //console.log("Appwrite service :: MoveCollectionToTrash :: error", error);
         }
     }
 
@@ -241,7 +241,7 @@ export class Service {
                 return null;
             }
         } catch (error) {
-            console.log("Appwrite service :: GetCollectionId :: error", error);
+            //console.log("Appwrite service :: GetCollectionId :: error", error);
             return null;
         }
     }

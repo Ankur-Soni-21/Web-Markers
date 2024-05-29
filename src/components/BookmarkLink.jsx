@@ -18,12 +18,12 @@ function BookmarkLink({ bookmark, viewStyle }) {
     appwriteService
       .RemoveBookmark({ Bookmark_ID: book.$id })
       .then((res) => {
-        console.log("Delete Bookmark : ", res);
+        //console.log("Delete Bookmark : ", res);
         dispatch(removeBookmark(book.$id));
         setBook(null);
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       })
       .finally(() => {
         setDeleting(false);
@@ -39,12 +39,12 @@ function BookmarkLink({ bookmark, viewStyle }) {
         Collection_ID: "3",
       })
       .then((res) => {
-        console.log("Delete Bookmark : ", res);
+        //console.log("Delete Bookmark : ", res);
         dispatch(moveBookmarkToTrash(book.$id));
         setBook(null);
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       })
       .finally(() => {
         setDeleting(false);

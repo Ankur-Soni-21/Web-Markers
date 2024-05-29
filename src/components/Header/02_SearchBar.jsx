@@ -8,14 +8,14 @@ function SearchBar() {
   const navigate = useNavigate();
 
   const handleNavigate = (e) => {
-    console.log("query:", e.target.value);
+    //console.log("query:", e.target.value);
     navigate(`/home/1/${e.target.value}`);
     dispatch(filterBookmarks(e.target.value));
   };
   const handleSubmit = (e) => {
     if (e.key == "Enter") {
-      console.log(e.key);
-      console.log("query", e.target.value);
+      //console.log(e.key);
+      //console.log("query", e.target.value);
       navigate(`/home/1/${e.target.value}`);
       dispatch(filterBookmarks(e.target.value));
     }

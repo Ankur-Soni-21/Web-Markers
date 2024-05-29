@@ -40,9 +40,9 @@ function Bookmarks() {
 
   // 4> Fetching all the bookmarks
   useEffect(() => {
-    // console.log("Params", params);
-    // console.log("Query", query);
-    // console.log("Collection ID", collectionId);
+    // //console.log("Params", params);
+    // //console.log("Query", query);
+    // //console.log("Collection ID", collectionId);
     appwriteService
       .ListAllBookmarks({
         User_ID: userId,
@@ -65,16 +65,16 @@ function Bookmarks() {
 
         dispatch(setStoreBookmarks(allBookmarks));
         setLoading(false);
-        console.log("All Bookmarks", allBookmarks);
+        //console.log("All Bookmarks", allBookmarks);
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       });
   }, []);
 
   useEffect(() => {
     if (collectionId === "1") {
-      // console.log("Filtered Bookmarks", filteredBookmarks);
+      // //console.log("Filtered Bookmarks", filteredBookmarks);
       if (query) setBookmarks(filteredBookmarks);
       else setBookmarks(allBookmarks);
     } else {
