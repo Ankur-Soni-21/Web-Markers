@@ -118,9 +118,7 @@ function UserProfile() {
               </button>
             </li>
             <li
-              className={` ${
-                loader ? "bg-slate-600" : null
-              }   cursor-pointer py-1 px-2 border-t-2 border-slate-700 mt-5 rounded-lg`}
+              className={`cursor-pointer py-1 px-2 border-t-2 border-slate-700 mt-5 rounded-lg`}
             >
               <button
                 className="flex flex-row  items-center w-full rounded-lg mt-2 py-1 hover:bg-gradient-to-r from-red-500 via-orange-500 to-pink-400"
@@ -133,11 +131,14 @@ function UserProfile() {
                   {!loader ? (
                     <span>Logout</span>
                   ) : (
-                    <img
-                      src={spinner}
-                      alt="spinner"
-                      className="w-10 h-10 my-1 animate-spin"
-                    />
+                    <span className="flex items-center gap-4">
+                      <img
+                        src={spinner}
+                        alt="spinner"
+                        className="w-8 h-8 my-1 animate-spin"
+                      />
+                      Logging Out..
+                    </span>
                   )}
                 </Link>
               </button>

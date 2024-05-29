@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import Logo from "./Logo";
 import spinner from "../assets/spinner.svg";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -48,8 +49,7 @@ function Login() {
       return;
     }
 
-    const passwordRegex =
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)/;
     if (!passwordRegex.test(password)) {
       setPasswordError(
         "Password must contain at least one uppercase letter and number"
@@ -73,81 +73,69 @@ function Login() {
   };
 
   return (
-    <Container
-      className={"w-full h-full flex flex-col items-center justify-center"}
-    >
-      <form
-        onSubmit={handleSubmit}
-        className=" gap-2 flex items-center justify-center flex-col h-2/5 max-h-[360px] px-10 mb-24 rounded-lg bg-slate-200 shadow-lg text-black"
-      >
-        <Logo className={`mb-4 p-4 rounded-full bg-slate-700`} />
-
-        <Container className={`my-2`}>
-          <Container className={"flex flex-row"}>
-            <label htmlFor="email" className="p-2 w-32 font-bold">
-              Email:
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={handleEmailChange}
-              className="p-2 outline-none w-64"
-            />
-          </Container>
-          {emailError && (
-            <p className="text-red-500 text-sm text-center mt-2 pl-4">
-              {emailError}
-            </p>
-          )}
+    <Container className="bg-gradient-to-r from-violet-800 to-indigo-950 ">
+      <div className="flex flex-col items-center justify-center h-screen">
+        <Container className={"flex flex-row gap-2 items-center mb-4"}>
+          <Logo className={"mb-0"} />
+          <h1 className="text-2xl">WebMarkers</h1>
         </Container>
-
-        <Container className={`my-2`}>
-          <Container className={"flex flex-row"}>
-            <label htmlFor="password" className="p-2 w-32 font-bold">
-              Password:
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={handlePasswordChange}
-              className="p-2 outline-none w-64"
-            />
+        <form
+          className="flex flex-col gap-4 p-8 bg-white rounded-md w-[420px]"
+          onSubmit={handleSubmit}
+        >
+          <label htmlFor="email" className="text-slate-600">
+            Email
+          </label>
+          <input
+            id="email"
+            className="p-2 rounded-md text-slate-400 border border-slate-200"
+            type="text"
+            placeholder="Enter your email"
+            value={email}
+            onChange={handleEmailChange}
+          />
+          <p className="text-red-500">{emailError}</p>
+          <label htmlFor="password" className="text-slate-600">
+            Password
+          </label>
+          <input
+            id="password"
+            className="p-2 rounded-md text-slate-400 border border-slate-200"
+            type="password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={handlePasswordChange}
+          />
+          <p className="text-red-500">{passwordError}</p>
+          <Container className={"flex flex-row gap-2"}>
+            <button
+              className="p-2 w-3/5 rounded-md text-white bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <img
+                    className="h-6 w-6 animate-spin"
+                    src={spinner}
+                    alt="loading"
+                  />
+                  Logging In..
+                </span>
+              ) : (
+                "Login"
+              )}
+            </button>
+            <Link
+              to={"/signup"}
+              className=" text-center p-2 w-2/5 rounded-md text-white bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600"
+            >
+              Sign Up
+            </Link>
           </Container>
-
-          {passwordError && (
-            <p className="text-red-500 text-sm text-center mt-2 pl-4">
-              {passwordError}
-            </p>
-          )}
-        </Container>
-
-        {loading ? (
-          <button
-            type="button"
-            className="w-full p-2 bg-slate-700 rounded-lg text-white font-bold mt-6 flex flex-row items-center justify-center"
-            disabled
-          >
-            <img
-              src={spinner}
-              alt="loading spinner"
-              className="w-6 h-6 animate-spin"
-            />
-            Loging in...
-          </button>
-        ) : (
-          <button
-            type="submit"
-            className="w-full p-2 bg-slate-700 rounded-lg text-white font-bold mt-6"
-          >
-            Login
-          </button>
-        )}
-        {error && (
-          <p className="text-red-500 text-sm text-center mt-2">{error}</p>
-        )}
-      </form>
+          <p className="text-red-500 text-sm text-center">{error}</p>
+        </form>
+      </div>
     </Container>
   );
 }

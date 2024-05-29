@@ -16,7 +16,9 @@ function Bookmarks() {
     return `${day} ${month}`;
   }
   // 1> Getting User ID
-  const userId = useSelector((state) => state.auth.userData.$id);
+  const userId = useSelector((state) =>
+    state.auth.userData ? state.auth.userData.$id : null
+  );
   const filteredBookmarks = useSelector(
     (state) => state.book.filteredBookmarks
   );
@@ -116,7 +118,7 @@ function Bookmarks() {
           <img
             src={EmptyCollectionImage}
             alt=""
-            className="rounded-full w-1/2"
+            className="rounded-full w-1/2 max-w-[360px]"
           />
           <p className="text-2xl font-normal mt-4 text-slate-500">
             This Collection has no Bookmarks
