@@ -32,16 +32,16 @@ function AddForm() {
     const year = date.getFullYear();
 
     const formattedDate = `${day}-${month}-${year}`;
-    //console.log(formattedDate);
+    console.log(formattedDate);
     return formattedDate;
   };
 
   const setCollectionData = (e) => {
     setSeletedColl(e.target.value);
-    //console.log(e);
+    console.log(e);
     const selectedOption =
       e.target.selectedOptions[0].getAttribute("data-collection");
-    //console.log(selectedOption);
+    console.log(selectedOption);
     setCollectionId(selectedOption);
   };
 
@@ -60,7 +60,7 @@ function AddForm() {
       return;
     }
     setIsAdding(true);
-    //console.log("Collection ID [add bookmark]:", collectionId);
+    console.log("Collection ID [add bookmark]:", collectionId);
     fetch(apiUrl)
       .then((response) => {
         if (!response.ok) {
@@ -83,7 +83,7 @@ function AddForm() {
             Collection_ID: collectionId,
           })
           .then((response) => {
-            //console.log(response);
+            console.log(response);
             dispatch(
               addBookmark({
                 $id: response.$id,
@@ -102,7 +102,7 @@ function AddForm() {
             setUrl("");
           })
           .catch((error) => {
-            //console.log(error);
+            console.log(error);
             setIsAdding(false);
           });
       });

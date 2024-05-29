@@ -51,7 +51,7 @@ function AddCollection() {
     if (e.key !== "Enter") return;
 
     if (collectionName === "") {
-      //console.log("Collection name cannot be empty");
+      console.log("Collection name cannot be empty");
       return;
     }
 
@@ -64,7 +64,7 @@ function AddCollection() {
         Collection_ID: newCollectionId,
       })
       .then((response) => {
-        //console.log(response);
+        console.log(response);
         if (response) {
           dispatch(
             addColl({
@@ -73,9 +73,9 @@ function AddCollection() {
             })
           );
           setShowInput(false);
-          //console.log("collectionid : ", newCollectionId);
+          console.log("collectionid : ", newCollectionId);
           navigate(`/home/${newCollectionId}`);
-          //console.log("Collection Added");
+          console.log("Collection Added");
           setCollectionName("");
         }
       });

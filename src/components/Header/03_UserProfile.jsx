@@ -33,18 +33,18 @@ function UserProfile() {
       .then((response) => {
         dispatch(logout());
         navigate("/login");
-        // //console.log("Logged Out", response);
+        // console.log("Logged Out", response);
         setLoader(false);
       })
       .catch((error) => {
-        //console.log("Error", error);
+        console.log("Error", error);
         setLoader(false);
       });
   };
 
   // Log user data when menuPopup changes
   useEffect(() => {
-    // //console.log("User Data", userData);
+    // console.log("User Data", userData);
   }, [menuPopup]);
 
   return (
