@@ -76,7 +76,7 @@ function Login() {
     <Container className="bg-gradient-to-r from-violet-800 to-indigo-950 ">
       <div className="flex flex-col items-center justify-center h-screen">
         <Container className={"flex flex-row gap-2 items-center mb-4"}>
-          <Logo className={"mb-0"} />
+          <Logo className={"mb-0 flex items-center justify-center"} />
           <h1 className="text-2xl">WebMarkers</h1>
         </Container>
         <form
