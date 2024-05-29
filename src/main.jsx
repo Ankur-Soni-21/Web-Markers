@@ -16,8 +16,6 @@ import App from "./App.jsx";
 import authService from "./appwrite/auth.js";
 
 // check if user is logged in
-let user = await authService.getCurrentUser();
-// le.log("user", user);
 const Router = createBrowserRouter([
   {
     path: "/",
@@ -25,7 +23,7 @@ const Router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: user ? <HomePage /> : <SignupPage />,
+        element:  <HomePage />,
       },
       {
         path: "/login",
